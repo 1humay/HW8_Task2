@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class AuthorListParser {
 
     // Avoid partition where these values are contained
-    private final static Set<String> AVOID_TERMS_IN_LOWER_CASE = Set.of(
+    private static final Set<String> AVOID_TERMS_IN_LOWER_CASE = Set.of(
             "jr", "sr", "jnr", "snr", "von", "zu", "van", "der");
 
     private static final int TOKEN_GROUP_LENGTH = 4; // number of entries for a token
@@ -126,7 +126,7 @@ public class AuthorListParser {
             // Usually the getAsLastFirstNamesWithAnd method would separate them if pre- and lastname are separated with "and"
             // If not, we check if spaces separate pre- and lastname
             if (spaceInAllParts) {
-                listOfNames = listOfNames.replaceAll(",", " and");
+                listOfNames = listOfNames.replace(",", " and");
             } else {
                 // Looking for name affixes to avoid
                 // arrayNameList needs to reduce by the count off avoiding terms
@@ -181,6 +181,7 @@ public class AuthorListParser {
             Token token = getToken();
             switch (token) {
                 case EOF:
+                	break;
                 case AND:
                     continueLoop = false;
                     break;
@@ -426,14 +427,14 @@ public class AuthorListParser {
                 bracesLevel++;
             }
 
-            if (firstLetterIsFound && (tokenAbbrEnd < 0) && ((bracesLevel == 0) || (c == '{'))) {
+            if (firstLetterIsFound && (tokenAbbrEnd < 0) && ((bracesLevel == 0) || (c == '{')) || (c == '}') ) {
                 tokenAbbrEnd = tokenEnd;
             }
-            if ((c == '}')) {
+           
             	if( (bracesLevel > 0)) {
                 bracesLevel--;
             }
-            	}
+            	
             if (!firstLetterIsFound && (currentBackslash < 0) && Character.isLetter(c)) {
                 if (bracesLevel == 0) {
                     tokenCase = Character.isUpperCase(c) || (Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN);
